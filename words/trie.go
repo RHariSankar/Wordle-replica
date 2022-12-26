@@ -37,11 +37,12 @@ func (t *trieNode) insert(word string) {
 	}
 	firstChar := string(word[0])
 	node, ok := t.letters[firstChar]
-	if ok && wordLength == 1 {
-		node.isWordEnd = true
-		node.count++
-		return
-	} else if ok {
+	if ok {
+		if wordLength == 1 {
+			node.isWordEnd = true
+			node.count++
+			return
+		}
 		node.count++
 		node.insert(word[1:wordLength])
 	} else {
@@ -95,15 +96,7 @@ func GetInstance() *trie {
 		defer lock.Unlock()
 
 		if trieInstance == nil {
-			// words, err := readWordsFromFile()
 			words := resources.AllWords
-			// if err != nil {
-			// 	log.Printf("couldn't read words from file: %s", err.Error())
-			// 	return nil
-			// }
-
-			log.Printf("words length %d", len(words))
-
 			trieInstance = &trie{
 				head: &trieNode{
 					letters:   make(map[string]*trieNode),
