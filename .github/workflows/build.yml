@@ -16,8 +16,18 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  lint-and-test:
-    name: lint-and-test
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.50
+  # The "build" workflow
+  test:
+    needs: lint
+    name: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-go@v3
@@ -27,17 +37,13 @@ jobs:
       - name: vet
         run: |
           go vet .
-      - name: lint
-        uses: golangci/golangci-lint-action@v3
-        with:
-          version: v1.50
       - name: run test
         run: |
           go test ./...
-  # The "build" workflow
   build:
     # The type of runner that the job will run on
-    needs: lint-and-test
+    name: build
+    needs: test
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
