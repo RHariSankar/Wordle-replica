@@ -4,12 +4,13 @@ import (
 	"backend/routes/v1"
 	"bytes"
 	"encoding/json"
-	"github.com/gorilla/mux"
-	"github.com/stretchr/testify/assert"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/gorilla/mux"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestIsValidRequestSuccess(t *testing.T) {
@@ -56,5 +57,4 @@ func TestIsValidRequest400(t *testing.T) {
 	routes.IsValidWord(w, r)
 
 	assert.Equal(t, http.StatusBadRequest, w.Code)
-	
 }

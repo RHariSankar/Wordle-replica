@@ -14,19 +14,19 @@ type trieNode struct {
 	count     int
 }
 
-type trie struct {
+type Trie struct {
 	head *trieNode
 }
 
-func (t *trie) insert(word string) {
+func (t *Trie) insert(word string) {
 	t.head.insert(word)
 }
 
-func (t *trie) Find(word string) bool {
+func (t *Trie) Find(word string) bool {
 	return t.head.find(word)
 }
 
-func (t *trie) PrintTrie() {
+func (t *Trie) PrintTrie() {
 	t.head.printTrieNode(0)
 }
 
@@ -37,11 +37,12 @@ func (t *trieNode) insert(word string) {
 	}
 	firstChar := string(word[0])
 	node, ok := t.letters[firstChar]
-	if ok && wordLength == 1 {
-		node.isWordEnd = true
-		node.count++
-		return
-	} else if ok {
+	if ok {
+		if wordLength == 1 {
+			node.isWordEnd = true
+			node.count++
+			return
+		}
 		node.count++
 		node.insert(word[1:wordLength])
 	} else {
@@ -83,28 +84,19 @@ func (t *trieNode) printTrieNode(level int) {
 	}
 }
 
-var trieInstance *trie
+var trieInstance *Trie
 
 var lock = &sync.Mutex{}
 
 // returns the singleton trie instance.
-func GetInstance() *trie {
-
+func GetInstance() *Trie {
 	if trieInstance == nil {
 		lock.Lock()
 		defer lock.Unlock()
 
 		if trieInstance == nil {
-			// words, err := readWordsFromFile()
 			words := resources.AllWords
-			// if err != nil {
-			// 	log.Printf("couldn't read words from file: %s", err.Error())
-			// 	return nil
-			// }
-
-			log.Printf("words length %d", len(words))
-
-			trieInstance = &trie{
+			trieInstance = &Trie{
 				head: &trieNode{
 					letters:   make(map[string]*trieNode),
 					isWordEnd: false,
